@@ -29,9 +29,9 @@ async def add(ctx, *, task):
 
 @bot.command()
 async def list(ctx):
-    tasks = await database.keys()
-    if tasks:
-        task_list = "\n".join(f"- {task}" for task in tasks)
+    items = await database.items()
+    if items:
+        task_list = "\n".join(f"- {task}" for task, status in items)
         await ctx.send(f"現在のタスク:\n{task_list}")
     else:
         await ctx.send("現在、タスクはありません。")
