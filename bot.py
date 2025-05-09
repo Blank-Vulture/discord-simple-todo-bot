@@ -29,7 +29,7 @@ async def add(ctx, *, task):
     async with aiosqlite.connect("tasks.db") as db:
         await db.execute("INSERT INTO tasks (task) VALUES (?)", (task,))
         await db.commit()
-    await ctx.send(f"タスクを追加しました: {task}")
+    await ctx.send(f"タスクを追加しましたンナ: {task}")
 
 @bot.command()
 async def list(ctx):
@@ -40,7 +40,7 @@ async def list(ctx):
         task_list = "\n".join(f"{index + 1}. {row[1]}" for index, row in enumerate(rows))
         await ctx.send(f"現在のタスク:\n{task_list}")
     else:
-        await ctx.send("現在、タスクはありません。")
+        await ctx.send("現在タスクは無いンナ。")
 
 #!done, tasks.dbはsqlite
 @bot.command()
@@ -50,9 +50,9 @@ async def done(ctx, task_name: str):
             await db.execute("DELETE FROM tasks WHERE task = ?", (task_name,))
             await db.commit()
         # 例外処理を追加
-        await ctx.send(f"タスクを完了しました: {task_name}")
+        await ctx.send(f"タスクを完了しましたンナ: {task_name}")
     except Exception as e:
-        await ctx.send(f"タスクの完了に失敗しました: {task_name}\nエラー: {e}")
+        await ctx.send(f"タスクの完了に失敗しましたンナ: {task_name}\nエラー: {e}")
 
 
 #!clear
@@ -61,6 +61,6 @@ async def clear(ctx):
     async with aiosqlite.connect("tasks.db") as db:
         await db.execute("DELETE FROM tasks")
         await db.commit()
-    await ctx.send("全てのタスクを削除しました。")
+    await ctx.send("全てのタスクを削除しましたンナ。")
 
 bot.run(TOKEN)

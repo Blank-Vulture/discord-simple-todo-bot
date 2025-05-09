@@ -1,104 +1,72 @@
-# Simple ToDo Discord Bot（日本語 README）
+# Discord TODO管理ボット
 
-このボットは、外部サーバーを一切使用せず、Discordのテキストチャンネルを「ToDoリストのデータベース」として活用するPython製のシンプルなボットです。
+## 📌 概要
 
-## ✅ 特徴
+このDiscordボットは、SQLiteデータベースを使って、シンプルにタスクの追加・一覧表示・削除ができる日本語対応のTODO管理ボットです。
 
-- 外部データベース不要（Discordチャンネルをデータ保存に使用）
-- `!add`, `!list`, `!done` の簡単操作
-- DiscordDatabaseライブラリで簡易的なキー・バリューストアを実現
+## ⚙️ 必要条件
 
----
+- Python 3.8以上
+- `discord.py`
+- `aiosqlite`
 
-## 🔧 セットアップ手順
+## 🛠️ セットアップ手順
 
-### 1. Discord Developer Portalでアプリ作成
-
-1. https://discord.com/developers/applications にアクセス
-2. 「New Application」から「Simple ToDo Manager」を作成
-3. 「Bot」セクションで「Add Bot」→「Message Content Intent」を有効化
-4. 「TOKEN」をコピーして `token.txt` に保存
-5. ボットを追加したいサーバのIDを `guild.txt` に保存（右クリック → サーバーIDをコピー）
-
-### 2. 必要なライブラリをインストール
+### 1. ライブラリのインストール
 
 ```bash
-pip install discord.py DiscordDatabase
+pip install discord.py aiosqlite
 ```
 
-### 3. ディレクトリ構成
+### 2. ファイルの準備
 
-```
-project/
-├── bot.py
-├── token.txt   # ボットトークン（1行）
-├── guild.txt   # ギルドID（1行）
-```
+ルートディレクトリに以下のファイルを用意してください：
 
-### 4. `bot.py` の起動
+- `token.txt`：1行でDiscordボットのトークンを記載
+- `guild.txt`：1行でGuild ID（サーバID）を記載
+
+### 3. 実行
+
+以下のコマンドで起動：
 
 ```bash
-python3 bot.py
+python bot.py
 ```
 
 ---
 
-## ⚙️ systemd サービスとして起動（Linux）
+## 🚀 使い方
 
-1. `/etc/systemd/system/todo-bot.service` を以下のように作成：
-
-```ini
-[Unit]
-Description=Simple ToDo Discord Bot
-After=network.target
-
-[Service]
-Type=simple
-User=YOUR_USERNAME
-WorkingDirectory=/home/YOUR_USERNAME/discord-bot
-ExecStart=/usr/bin/python3 /home/YOUR_USERNAME/discord-bot/bot.py
-Restart=on-failure
-RestartSec=5s
-
-[Install]
-WantedBy=multi-user.target
-```
-
-2. サービス有効化と起動：
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable todo-bot
-sudo systemctl start todo-bot
-```
+| コマンド | 機能 |
+|---------|------|
+| `!add タスク名` | タスクを追加 |
+| `!list` | 現在のタスクを一覧表示 |
+| `!done タスク名` | 指定したタスクを削除 |
+| `!clear` | 全てのタスクを削除 |
 
 ---
 
-## 📝 コマンド一覧
+## 💾 データ構造
 
-| コマンド              | 説明                       |
-|-----------------------|----------------------------|
-| `!add タスク内容`     | タスクを追加する           |
-| `!list`               | 登録されたタスク一覧を表示 |
-| `!done タスク内容`    | タスクを完了（削除）       |
+タスクは `tasks.db` というSQLiteファイルに格納されます。起動時に自動生成されます。
+
+```sql
+CREATE TABLE IF NOT EXISTS tasks (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  task TEXT
+);
+```
 
 ---
 
 ## 📌 注意点
 
-- チャンネルが自動生成されない場合は、ボットに「チャンネルの管理」権限があるか確認
-- データはDiscordチャンネルに保存されるため、**チャンネルの非公開化を推奨**
+- `!done` は完全一致でタスク名を検索します。
+- 同名タスクが複数ある場合、すべて削除されます。
+- IDの詰め直しは行わず、表示時に連番で見せています。
 
 ---
 
-## 🐍 対応バージョン
-
-- Python 3.8以降
-- discord.py v2.x
-- DiscordDatabase 最新版
-
----
-
-## 📄 ライセンス
+## 🪪 ライセンス
 
 MIT
